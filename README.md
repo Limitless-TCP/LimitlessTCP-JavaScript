@@ -55,6 +55,7 @@ server.on('connection', (socket) => {
     });
 });
 ```
+Note that the data returned is as a buffer because that is how tcp sends data, and the packets sent by the client are sent as stacked because they were sent too fast.
 
 #### Client:
 ```javascript
