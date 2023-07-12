@@ -6,15 +6,12 @@ It provides an easy way to create tcp client and server connections with the abi
 Main features:
 * Easy to setup
 * Anti-Packet stacking
-* No need to string or parse JSON's
+* No need to stringify or parse JSON's, the data you send is the data you receive, no annoying buffers
 * No limits from tcp
 * Built in heartbeats with timeout error
 * Built in packet compression using ZLib
 
 A few things to watch out for:
-* The 'heartbeat' and 'connect' packet under the object field 'tcpsType' is reserved if you have heartbeats enabled.
-* The string '<PacketSplitter>' should not be used in and of your messages, it is a unique identifier for splitting stacked packets.
-  If found it will be replaced with '<Redacted>'.
 * Both the client and the server must have heartbeats set to true for it to work
 
 Required Modules:
@@ -42,6 +39,42 @@ tcpClient.emit(data);
    * end
    * error
    * lookup
+
+### Compatible with normal TCP
+#### Server:
+```javascript
+let net = require('net');
+
+let server = net.createServer();
+
+server.listen(1234, () => {});
+
+server.on('connection', (socket) => {
+    socket.on('data', (data) => {
+        console.log(data.toString());
+    });
+});
+```
+
+#### Client:
+```javascript
+let { TCPClient } = require('./TCPService');
+
+let tcpClient = new TCPClient('127.0.0.1', 1234, true);
+
+tcpClient.connect();
+
+tcpClient.on('connect', () => {
+    console.log('s')
+    tcpClient.emit({type: 'test', data: 'This is a test packet 1'});
+    tcpClient.emit({type: 'test', data: 'This is a test packet 2'});
+    tcpClient.emit('Yo 1');
+    tcpClient.emit('Yo 2');
+});
+```
+
+Because the server isn't an instance of Limitless-TCP, the client will not use heartbeats, compression, or packet splitting. It will work as a normal tcp client.
+This however does not work the other way, a normal tcp client will not be compatible with a Limitless-TCP server
 
 ## Server:
 ```javascript
