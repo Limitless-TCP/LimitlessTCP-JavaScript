@@ -42,6 +42,8 @@ tcpClient.emit(data);
    * lookup
 
 ### Compatible with normal TCP
+A Limitless-TCP Client is compatible with a normal TCP server, meaning that you are able to connect to a generic tcp server while using
+Limitless-TCP's simple syntax. This however does remove the 'heartbeat', 'compression', and 'anti packet stacking'.
 #### Server:
 ```javascript
 let net = require('net');
@@ -74,9 +76,7 @@ tcpClient.on('connect', () => {
     tcpClient.emit('Yo 2');
 });
 ```
-
-Because the server isn't an instance of Limitless-TCP, the client will not use heartbeats, compression, or packet splitting. It will work as a normal tcp client.
-This however does not work the other way, a normal tcp client will not be compatible with a Limitless-TCP server
+This will not work the other way around, meaning you are not able to connect a normal tcp client to a Limitless TCP server.
 
 ## Server:
 ```javascript
@@ -85,7 +85,7 @@ let { TCPServer } = require('TCPService');
 let tcpServer = new TCPServer(num: port, bool: useHeartbeat)
 tcpServer.listen();
 
-tcpServer.on(str: event, null/socket: socket, (callback) => {}); //If null then it listens for tcpServer events instead of socket specific
+tcpServer.on(str: event, null/socket: socket, (callback) => {}); //If the socket field is null then it listens for tcpServer events instead of socket specific
 tcpServer.emit(data, socket: socket);
 ```
 
