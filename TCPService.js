@@ -2,65 +2,8 @@
  * This service is a wrapper for the TCP "Net" module.
  * It provides an easy way to create tcp client and server connections with the ability to create networks with ease.
  *
- * The main features of this service is its ability to prevent packet stacking meaning you will always receive packets in
- * order and never have an error parsing them. There is also no need to JSON.stringify your objects, this library handles that for you.
- *
- * Another cool feature is with a server and client setup with this service, there is a built-in heartbeat system that will throw
- * a TCP error. Meaning the service will notify you when a client or server goes down, so you can handle it.
- *
- * Any type of message is supported, JSON objects will be automatically parsed and other types will be returned as normal.
- *
- * A few things to watch out for:
- * - The 'heartbeat' and 'connect' packet under the object field 'tcpsType' is reserved if you have heartbeats enabled.
- * - The string '<PacketSplitter>' should not be used in and of your messages, it is a unique identifier for splitting stacked packets.
- *   If found it will be replaced with '<Redacted>'.
- * - Both the client and the server must have heartbeats set to true for it to work
- *
- *
- * Getting started:
- *   Client:
- *     let { TCPClient } = require('TCPService');
- *
- *     let tcpClient = new TCPClient(str: address, num: port, bool: useHeartbeat);
- *     tcpClient.connect();
- *
- *     tcpClient.on(str: event, (callback) => {});
- *     tcpClient.emit(data);
- *
- *     //Refer to tcp docs for callback information
- *     Events:
- *       - close
- *       - connect
- *       - data
- *       - drain
- *       - end
- *       - error
- *       - lookup
- *
- *
- *
- *   Server:
- *     let { TCPServer } = require('TCPService');
- *
- *     let tcpServer = new TCPServer(num: port, bool: useHeartbeat)
- *     tcpServer.listen();
- *
- *     tcpServer.on(str: event, null/socket: socket, (callback) => {}); //If null then it listens for tcpServer events instead of socket specific
- *     tcpServer.emit(data, socket: socket);
- *
- *     //Refer to tcp docs for callback information
- *     Events:
- *       Server:
- *         - connect
- *         - error
- *         - close
- *       Client:
- *         - close
- *         - data
- *         - drain
- *         - end
- *         - error
- *         - lookup
+ * Please refer to the JS docs for more information:
+ * https://github.com/Limitless-TCP/LimitlessTCP-JavaScript/blob/master/README.md
  */
     
 const net                                      = require('net');

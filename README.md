@@ -94,8 +94,8 @@ There is a built-in, auto updating array with all the connected sockets and ever
 ```javascript
 let TCPServer; //Initialize and listen
 
-let arr: connectedSockets = TCPServer.connectedSockets;
-let arr: allSockets     = TCPServer.allSockets;
+let arr: connectedSockets  = TCPServer.connectedSockets;
+let arr: allSockets        = TCPServer.allSockets;
 ```
 
 Refer to tcp docs for callback information
