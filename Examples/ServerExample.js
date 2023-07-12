@@ -1,4 +1,4 @@
-let { TCPServer } = require('./TCPService')
+let { TCPServer } = require('../Limitless-TCP')
 
 let tcpServer = new TCPServer(1234, true);
 

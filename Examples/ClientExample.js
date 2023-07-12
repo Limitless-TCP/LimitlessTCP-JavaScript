@@ -1,11 +1,10 @@
-let { TCPClient } = require('./TCPService');
+let { TCPClient } = require('../Limitless-TCP');
 
 let tcpClient = new TCPClient('127.0.0.1', 1234, true);
 
 tcpClient.connect();
 
 tcpClient.on('connect', () => {
-    console.log('s')
     tcpClient.emit({type: 'test', data: 'This is a test packet 1'});
     tcpClient.emit({type: 'test', data: 'This is a test packet 2'});
     tcpClient.emit('Yo 1');
