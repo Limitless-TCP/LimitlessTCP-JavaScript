@@ -25,23 +25,10 @@ Required Modules:
 ```javascript
 let {TCPClient} = require('Limitless-TCP');
 
-let tcpClient = new TCPClient(str
-:
-address, num
-:
-port, bool
-:
-useHeartbeat
-)
-;
+let tcpClient = new TCPClient( str: address, num: port, bool: useHeartbeat );
 tcpClient.connect();
 
-tcpClient.on(str
-:
-event, (callback) => {
-}
-)
-;
+tcpClient.on( str: event, (callback) => {} );
 tcpClient.emit(data);
 ```
 
@@ -97,27 +84,12 @@ This will not work the other way around, meaning you are not able to connect a n
 ```javascript
 let {TCPServer} = require('Limitless-TCP');
 
-let tcpServer = new TCPServer(num
-:
-port, bool
-:
-useHeartbeat
-)
+let tcpServer = new TCPServer( num: port, bool: useHeartbeat )
+
 tcpServer.listen();
 
-tcpServer.on(str
-:
-event, null / socket
-:
-socket, (callback) => {
-}
-)
-; //If the socket field is null then it listens for tcpServer events instead of socket specific
-tcpServer.emit(data, socket
-:
-socket
-)
-;
+tcpServer.on( str: event, null/socket: socket, (callback) => {} ); //If the socket field is null then it listens for tcpServer events instead of socket specific
+tcpServer.emit( data, socket: socket );
 ```
 
 ### Connected Sockets and All Sockets:
