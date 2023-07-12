@@ -6,6 +6,7 @@ It provides an easy way to create tcp client and server connections with the abi
 Main features:
 * Easy to setup
 * Anti-Packet stacking
+* Built in self auto updating connected and all sockets array
 * No need to stringify or parse JSON's, the data you send is the data you receive, no annoying buffers
 * No limits from tcp
 * Built in heartbeats with timeout error
@@ -88,7 +89,16 @@ tcpServer.on(str: event, null/socket: socket, (callback) => {}); //If null then 
 tcpServer.emit(data, socket: socket);
 ```
 
-//Refer to tcp docs for callback information
+### Connected Sockets and All Sockets:
+There is a built-in, auto updating array with all the connected sockets and every socket that is and has been connected (In its runtime, a restart would reset this)
+```javascript
+let TCPServer; //Initialize and listen
+
+let arr: connectedSockets = TCPServer.connectedSockets;
+let arr: allSockets     = TCPServer.allSockets;
+```
+
+Refer to tcp docs for callback information
 ### Events:
   * Server:
     * connect
@@ -101,3 +111,14 @@ tcpServer.emit(data, socket: socket);
     * end
     * error
     * lookup
+
+# Heartbeat Timeout
+There is a different error that is thrown when the heartbeats timeout. This error is the same on the server and the client.
+```bash
+TCPServiceError [Heartbeat Error]: The heartbeat counter has timed out
+    at Timeout._onTimeout (Path\To\TCPService.js:225:43)
+    at listOnTimeout (node:internal/timers:564:17)
+    at process.processTimers (node:internal/timers:507:7) {
+  Details: 'This socket has timed out from the server.'
+}
+```

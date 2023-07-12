@@ -62,12 +62,10 @@
  *         - error
  *         - lookup
  */
-
-//TODO Add a connectedSockets array to the server that will update with disconnects, and heartbeat timeouts
-//TODO Send a packet from the server to the client if it should use packet splitters
     
-let net                                      = require('net');
+const net                                      = require('net');
 const pako                                   = require('pako');
+const crypto                                    = require('crypto');
 
 class TCPClient {
     constructor(address, port, useHeartbeat) {
@@ -162,9 +160,9 @@ class TCPClient {
 
             case 'connection':
             case 'connect':
-                this.socket.on('connect', (socket) => {
+                this.socket.on('connect', cb => {
                     setTimeout(() => { //Wait for the connection packet
-                        callback(socket);
+                        callback(cb);
                     }, 20);
                 });
                 break;
@@ -259,6 +257,8 @@ class TCPServer {
         });
 
         this.server.on('connection', (socket) => {
+            socket.id = crypto.randomUUID();
+
             this.connectedSockets.push(socket);
             this.allSockets.push(socket);
 
@@ -344,7 +344,10 @@ class TCPServer {
         }else {
             switch(event.toLowerCase()) {
                 case 'close':
-                    socket.on('close', callback);
+                    socket.on('close', cb => {
+                        this.removeSocketFromConnectedSockets(socket);
+                        callback(cb);
+                    });
                     break;
 
                 case 'data':
@@ -412,17 +415,20 @@ class TCPServer {
 
                         if (socket.heartbeatCounter === 8) {
                             socket.emit('error', new TCPServiceError(ErrorType.HEARTBEAT, 'A client has timed out due to heartbeat', socket));
-
-                            this.server.close(() => {
-                                if (this.heartbeatInterval !== null && this.heartbeatInterval !== undefined) {
-                                    clearInterval(this.heartbeatInterval);
-                                }
-                            });
+                            this.removeSocketFromConnectedSockets(socket);
                         }
                     }
                 }, 900)
             }
         }, 1000)
+    }
+
+    removeSocketFromConnectedSockets(socket) {
+        this.connectedSockets.forEach((loopSocket, index) => {
+            if (loopSocket.id === socket.id) {
+                this.connectedSockets.splice(index, 1);
+            }
+        });
     }
 }
 
