@@ -32,7 +32,6 @@ tcpClient.on( str: event, (callback) => {} );
 tcpClient.emit(data);
 ```
 
-//Refer to tcp docs for callback information
 ### Events:
    * close
    * connect
@@ -41,6 +40,7 @@ tcpClient.emit(data);
    * end
    * error
    * lookup
+Refer to tcp docs for callback information
 
 ### Compatible with normal TCP
 A Limitless-TCP Client is compatible with a normal TCP server, meaning that you are able to connect to a generic tcp server while using
@@ -101,7 +101,6 @@ let arr: connectedSockets  = TCPServer.connectedSockets;
 let arr: allSockets        = TCPServer.allSockets;
 ```
 
-Refer to tcp docs for callback information
 ### Events:
   * Server:
     * connect
@@ -114,6 +113,7 @@ Refer to tcp docs for callback information
     * end
     * error
     * lookup
+Refer to tcp docs for callback information
 
 # Heartbeat Timeout
 There is a different error that is thrown when the heartbeats timeout. This error is the same on the server and the client.
