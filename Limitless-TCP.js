@@ -11,7 +11,6 @@ const crypto                                    = require('crypto');
 
 class TCPClient {
 
-    //TODO Add this settings object instead of useHearbeat
     constructor(address, port) {
 
         this.isServerAnInstance = false;
