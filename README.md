@@ -11,6 +11,7 @@ Main features:
 * No limits from tcp
 * Built in heartbeats with timeout error
 * Built in packet compression using ZLib
+* Settings for each feature so you can setup the server YOUR way
 
 A few things to watch out for:
 * Both the client and the server must have heartbeats set to true for it to work
@@ -21,11 +22,13 @@ Required Modules:
 
 # Getting started
 ## Client:
+The setup for a client is very straight forward, you create a new instance of the TCPClient class and pass the address and port
+of a tcp server into the constructor, you then run the connect() function to attempt to connect to the server.
 
 ```javascript
 let {TCPClient} = require('Limitless-TCP');
 
-let tcpClient = new TCPClient( str: address, num: port, bool: useHeartbeat );
+let tcpClient = new TCPClient( str: address, num: port);
 tcpClient.connect();
 
 tcpClient.on( str: event, (callback) => {} );
@@ -66,7 +69,7 @@ Note that the data returned is as a buffer because that is how tcp sends data, a
 ```javascript
 let {TCPClient} = require('./Limitless-TCP');
 
-let tcpClient = new TCPClient('127.0.0.1', 1234, true);
+let tcpClient = new TCPClient('127.0.0.1', 1234);
 
 tcpClient.connect();
 
@@ -80,11 +83,19 @@ tcpClient.on('connect', () => {
 This will not work the other way around, meaning you are not able to connect a normal tcp client to a Limitless TCP server.
 
 ## Server:
+The server is where all the settings are setup, meaning if you want to disable a feature, this is where you set it up, the clients will abide by the settings specified
+here.
 
 ```javascript
 let {TCPServer} = require('Limitless-TCP');
 
-let tcpServer = new TCPServer( num: port, bool: useHeartbeat )
+/**
+ * @param settings = { //Any null values will be set to true
+ *     useHeartbeat: bool,
+ *     useCompression: bool
+ * }
+ */
+let tcpServer = new TCPServer( num: port, obj: settings )
 
 tcpServer.listen();
 

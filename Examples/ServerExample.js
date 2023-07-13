@@ -1,6 +1,11 @@
-let { TCPServer } = require('../Limitless-TCP')
+let { TCPServer } = require('../Limitless-TCP');
 
-let tcpServer = new TCPServer(1234, true);
+let settings = {
+    useHeartbeat: true,
+    useCompression: true
+}
+
+let tcpServer = new TCPServer(1234, settings); //The settings here will be applied to any clients that connect to the server
 
 tcpServer.listen();
 

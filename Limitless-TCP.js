@@ -5,33 +5,33 @@
  * Please refer to the JS docs for more information:
  * https://github.com/Limitless-TCP/LimitlessTCP-JavaScript/blob/master/README.md
  */
-    
+
 const net                                      = require('net');
-const pako                                   = require('pako');
 const crypto                                    = require('crypto');
 
 class TCPClient {
-    constructor(address, port, useHeartbeat) {
+
+    //TODO Add this settings object instead of useHearbeat
+    constructor(address, port) {
 
         this.isServerAnInstance = false;
+
         this.useHeartbeat = false;
-        if (useHeartbeat === null) {
-            this.useHeartbeatSetting = false;
-        }else {
-            this.useHeartbeatSetting = useHeartbeat;
-        }
+        this.useCompression = false;
+        this.useChunking = false;
 
         this.port = port;
         this.address = address;
 
         this.socket = new net.Socket;
-
-
-        //this.socket.emit('error', new TCPServiceError('Heartbeat Timeout', 'ERRCONHBT'));
     }
 
-    connect() {
-        this.socket.connect(this.port, this.address, () => {
+    connect(callback) {
+        this.socket.connect(this.port, this.address, cb => {
+            if (callback !== null) {
+                callback(cb);
+            }
+
             this.localAddress = this.socket.address().address;
             this.localPort = this.socket.address().port;
 
@@ -49,12 +49,21 @@ class TCPClient {
                                     break;
 
                                 case 'tcpsjs-connect':
-                                    if (this.useHeartbeatSetting) {
+                                    this.isServerAnInstance = true;
+
+                                    if (packet.data.useHeartbeat) {
                                         this.useHeartbeat = true;
                                         this.startHeartbeat();
                                         this.lastHeartbeat = Date.now();
+                                    }
 
-                                        this.isServerAnInstance = true;
+                                    if (packet.data.useCompression) {
+                                        this.pako = require('pako');
+                                        this.useCompression = true;
+                                    }
+
+                                    if (packet.data.useChunking) {
+                                        this.useChunking = true;
                                     }
                                     break;
                             }
@@ -86,8 +95,14 @@ class TCPClient {
         try {
             data = JSON.stringify(data);
         }catch (e) {}
+
         if (this.isServerAnInstance) {
-            this.socket.write(JSON.stringify({ type: 'tcpsjs-packet', data: Buffer.from(pako.deflate(data)) }) + '<PacketSplitter>');
+            if (this.useCompression) {
+                this.socket.write(JSON.stringify({ type: 'tcpsjs-packet', data: Buffer.from(pako.deflate(data)) }) + '<PacketSplitter>');
+            }else {
+                this.socket.write(JSON.stringify({ type: 'tcpsjs-packet', data: data }) + '<PacketSplitter>');
+            }
+
         }else {
             this.socket.write(data);
         }
@@ -121,7 +136,13 @@ class TCPClient {
                                 packet = JSON.parse(packet);
                                 if (packet.type === 'tcpsjs-packet') {
 
-                                    let packetData = Buffer.from(pako.inflate(new Uint8Array(Buffer.from(packet.data.data)))).toString();
+                                    let packetData;
+
+                                    if (this.useCompression) {
+                                        packetData = Buffer.from(pako.inflate(new Uint8Array(Buffer.from(packet.data.data)))).toString();
+                                    }else {
+                                        packetData = packet.data.toString();
+                                    }
 
                                     try { //Try to parse, if error it isn't a json
                                         packetData = JSON.parse(packetData)
@@ -175,25 +196,58 @@ class TCPClient {
 
 
 class TCPServer {
-    constructor(port, useHeartbeat) {
+
+    /**
+     * @param settings = { //If null, set to true (If server is instance of LimitlessTCP)
+     *     heartbeat: bool,
+     *     compression: bool, //Only import the compression library if this is true
+     *     chunking: bool //Coming soon
+     * }
+     */
+    constructor(port, settings) {
         this.port = port;
+
+        if (settings === null) {
+            this.useHeartbeat = false;
+            this.useCompression = false;
+            this.useChunking = false;
+        }else {
+            if (settings.useHeartbeat !== undefined) {
+                this.useHeartbeat = settings.useHeartbeat;
+            }else {
+                this.useHeartbeat = true;
+            }
+
+            if (settings.useCompression !== undefined) {
+                this.useCompression = settings.useCompression;
+
+                if (settings.useCompression) {  //Load in compression library if enabled
+                    this.pako = require('pako');
+                }
+            }else {
+                this.useCompression = true;
+                this.pako = require('pako');
+            }
+
+            if (settings.useChunking !== undefined) {
+                this.useChunking = settings.useChunking;
+            }else {
+                this.useChunking = true;
+            }
+        }
 
         this.connectedSockets = [];
         this.allSockets = [];
 
         this.server = net.createServer();
-
-        if (useHeartbeat === null) {
-            this.useHeartbeat = false;
-
-
-        }else {
-            this.useHeartbeat = useHeartbeat;
-        }
     }
 
-    listen() {
-        this.server.listen(this.port, () => {
+    listen(callback) {
+        this.server.listen(this.port, cb => {
+            if (callback !== null) {
+                callback(cb);
+            }
+
             if (this.useHeartbeat) {
                 this.startHeartbeat();
             }
@@ -205,7 +259,7 @@ class TCPServer {
             this.connectedSockets.push(socket);
             this.allSockets.push(socket);
 
-            socket.write(JSON.stringify({ type: 'tcpsjs-connect' }))
+            socket.write(JSON.stringify({ type: 'tcpsjs-connect', data: { useHeartbeat: this.useHeartbeat, useCompression: this.useCompression, useChunking: this.useChunking } }))
 
             if (this.useHeartbeat) {
                 socket.lastHeartbeat = Date.now();
@@ -259,7 +313,11 @@ class TCPServer {
             data = JSON.stringify(data);
         }catch (e) {}
 
-        socket.write(JSON.stringify({ type: 'tcpsjs-packet', data: Buffer.from(pako.deflate(data)) }) + '<PacketSplitter>');
+        if (this.useCompression) {
+            socket.write(JSON.stringify({ type: 'tcpsjs-packet', data: Buffer.from(pako.deflate(data)) }) + '<PacketSplitter>');
+        }else {
+            socket.write(JSON.stringify({ type: 'tcpsjs-packet', data: data }) + '<PacketSplitter>');
+        }
     }
 
     on(event, socket, callback) {
@@ -303,7 +361,13 @@ class TCPServer {
                                 packet = JSON.parse(packet);
                                 if (packet.type === 'tcpsjs-packet') {
 
-                                    let packetData = Buffer.from(pako.inflate(new Uint8Array(Buffer.from(packet.data.data)))).toString();
+                                    let packetData;
+
+                                    if (this.useCompression) {
+                                        packetData = Buffer.from(pako.inflate(new Uint8Array(Buffer.from(packet.data.data)))).toString();
+                                    }else {
+                                        packetData = packet.data.toString();
+                                    }
 
                                     try { //Try to parse, if error it isn't a json
                                         packetData = JSON.parse(packetData)

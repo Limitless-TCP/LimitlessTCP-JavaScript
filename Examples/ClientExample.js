@@ -1,6 +1,6 @@
 let { TCPClient } = require('../Limitless-TCP');
 
-let tcpClient = new TCPClient('127.0.0.1', 1234, true);
+let tcpClient = new TCPClient('127.0.0.1', 1234);
 
 tcpClient.connect();
 
