@@ -43,6 +43,7 @@ tcpClient.emit(data);
    * end
    * error
    * lookup
+
 Refer to tcp docs for callback information
 
 ### Compatible with normal TCP
@@ -124,6 +125,7 @@ let arr: allSockets        = TCPServer.allSockets;
     * end
     * error
     * lookup
+    
 Refer to tcp docs for callback information
 
 # Heartbeat Timeout
