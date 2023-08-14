@@ -1,6 +1,10 @@
 {
-  "name": "LimitlessTCP",
-  "version": "1.0.0",
+  "name": "limitless_tcp",
+  "version": "1.0.1",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Limitless-TCP/LimitlessTCP-JavaScript"
+  },
   "dependencies": {
     "pako": "^2.1.0"
   }
