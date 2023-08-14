@@ -3,7 +3,7 @@
 This service is a wrapper for the TCP "Net" module.
 It provides an easy way to create tcp client and server connections with the ability to create networks with ease.
 
-Main features:
+**Main features:**
 * Easy to setup
 * Anti-Packet stacking
 * Built in self auto updating connected and all sockets array
@@ -14,16 +14,16 @@ Main features:
 * Built in packet compression using ZLib
 * Settings for each feature so you can setup the server YOUR way
 
-Beta Features:
+**Beta Features:**
 * Built in packet chunking system (This feature is inconsistent, it depends on the computer that it is running on)
 
-A few things to watch out for:
+**A few things to watch out for:**
 * Both the client and the server must have heartbeats set to true for it to work
 
-Required Modules:
+**Required Modules:**
 * [Pako](https://github.com/nodeca/pako) (ZLib compression library)
 
-## The Best Part
+### The Best Part
 The best part about this library, is the syntax is the exact same as regular tcp, meaning that you can fully migrate your project
 over without any hassle
 
