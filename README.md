@@ -9,15 +9,23 @@ Main features:
 * Built in self auto updating connected and all sockets array
 * No need to stringify or parse JSON's, the data you send is the data you receive, no annoying buffers
 * No limits from tcp
+* The only speed limit is your network, in closed networks, it is able to perfectly handle packets through a for loop
 * Built in heartbeats with timeout error
 * Built in packet compression using ZLib
 * Settings for each feature so you can setup the server YOUR way
+
+Beta Features:
+* Built in packet chunking system (This feature is inconsistent, it depends on the computer that it is running on)
 
 A few things to watch out for:
 * Both the client and the server must have heartbeats set to true for it to work
 
 Required Modules:
 * [Pako](https://github.com/nodeca/pako) (ZLib compression library)
+
+## The Best Part
+The best part about this library, is the syntax is the exact same as regular tcp, meaning that you can fully migrate your project
+over without any hassle
 
 
 # Getting started
@@ -93,16 +101,27 @@ let {TCPServer} = require('Limitless-TCP');
 /**
  * @param settings = { //Any null values will be set to true
  *     useHeartbeat: bool,
- *     useCompression: bool
+ *     useCompression: bool,
+ *     useChunking: bool (Beta Feature)
  * }
  */
 let tcpServer = new TCPServer( num: port, obj: settings )
 
 tcpServer.listen();
 
-tcpServer.on( str: event, null/socket: socket, (callback) => {} ); //If the socket field is null then it listens for tcpServer events instead of socket specific
-tcpServer.emit( data, socket: socket );
+tcpServer.on( str: event, (callback) => {} );
 ```
+
+### Writing a message to socket
+```javascript
+tcpServer.on( 'connect', (socket) => {
+    socket.emit( any: message );
+    socket.write( any: message );
+});
+```
+
+This is also how you would achieve chunking, it is built in and automatically detected when a packet gets overs 14000 bytes.
+Setting useChunking to false would just attempt to send the packet in one go no matter the size.
 
 ### Connected Sockets and All Sockets:
 There is a built-in, auto updating array with all the connected sockets and every socket that is and has been connected (In its runtime, a restart would reset this)
