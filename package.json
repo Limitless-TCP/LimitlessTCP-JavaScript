@@ -1,10 +1,17 @@
 {
   "name": "limitless_tcp",
-  "version": "1.0.2",
+  "description": "Wrapper library for the net module providing limitless potential.",
+  "version": "1.0.4",
+  "license": "GPL-3.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/Limitless-TCP/LimitlessTCP-JavaScript"
   },
+  "files": [
+    "Limitless-TCP.js",
+    "README.md",
+    "COPYING.txt"
+  ],
   "dependencies": {
     "pako": "^2.1.0"
   }
