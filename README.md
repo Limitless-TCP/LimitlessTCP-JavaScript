@@ -39,7 +39,7 @@ let {TCPClient} = require('Limitless-TCP');
 let tcpClient = new TCPClient( str: address, num: port);
 tcpClient.connect();
 
-tcpClient.on( str: event, (callback) => {} );
+tcpClient.on( str: event, ( callback ) => {} );
 tcpClient.emit(data);
 ```
 
@@ -65,8 +65,8 @@ let server = net.createServer();
 
 server.listen(1234, () => {});
 
-server.on('connection', (socket) => {
-    socket.on('data', (data) => {
+server.on('connection', ( socket ) => {
+    socket.on('data', ( data ) => {
         console.log(data.toString());
     });
 });
@@ -109,12 +109,12 @@ let tcpServer = new TCPServer( num: port, obj: settings )
 
 tcpServer.listen();
 
-tcpServer.on( str: event, (callback) => {} );
+tcpServer.on( str: event, ( callback ) => {} );
 ```
 
 ### Writing a message to socket
 ```javascript
-tcpServer.on( 'connect', (socket) => {
+tcpServer.on( 'connect', ( socket ) => {
     socket.emit( any: message );
     socket.write( any: message );
 });

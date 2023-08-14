@@ -7,10 +7,10 @@
  */
 
 const net                                      = require('net');
-const crypto                                    = require('crypto');
-const { Worker } = require('worker_threads');
+const crypto                                   = require('crypto');
+const { Worker }                               = require('worker_threads');
 
-let chunkSize = 14000;
+let chunkSize                                  = 14000;
 
 class TCPClient {
 
@@ -268,8 +268,7 @@ class TCPClient {
                                     });
                                     break;
                             }
-                        } catch (e) {
-                        }
+                        } catch (e) {}
                     }
                 }
             });
@@ -411,6 +410,11 @@ class TCPClient {
 }
 
 
+/**
+ *
+ * @constructor(port, settings)
+ * - This is called to initialize the server
+ */
 class TCPServer {
 
     /**
@@ -463,6 +467,7 @@ class TCPServer {
         this.server = net.createServer();
     }
 
+    //This is called when the user is ready to listen for connections
     listen(callback) {
         this.server.listen(this.port, cb => {
             if (callback !== null) {
@@ -838,6 +843,9 @@ class TCPServer {
 
 /**
  * This class is used by the server for each socket instance
+ *
+ * @constructor(serverInstance, socketInstance)
+ *  - This is called when a socket connects to a server instance
  */
 class Socket {
 
