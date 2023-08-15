@@ -34,7 +34,7 @@ The setup for a client is very straight forward, you create a new instance of th
 of a tcp server into the constructor, you then run the connect() function to attempt to connect to the server.
 
 ```javascript
-let {TCPClient} = require('Limitless-TCP');
+let { TCPClient } = require('Limitless-TCP');
 
 let tcpClient = new TCPClient( str: address, num: port);
 tcpClient.connect();
@@ -44,13 +44,13 @@ tcpClient.emit(data);
 ```
 
 ### Events:
-   * close
-   * connect
-   * data
-   * drain
-   * end
-   * error
-   * lookup
+* close
+* connect
+* data
+* drain
+* end
+* error
+* lookup
 
 Refer to tcp docs for callback information
 
@@ -76,7 +76,7 @@ Note that the data returned is as a buffer because that is how tcp sends data, a
 #### Client:
 
 ```javascript
-let {TCPClient} = require('./Limitless-TCP');
+let { TCPClient } = require('Limitless-TCP');
 
 let tcpClient = new TCPClient('127.0.0.1', 1234);
 
@@ -96,7 +96,7 @@ The server is where all the settings are setup, meaning if you want to disable a
 here.
 
 ```javascript
-let {TCPServer} = require('Limitless-TCP');
+let { TCPServer } = require('Limitless-TCP');
 
 /**
  * @param settings = { //Any null values will be set to true
@@ -133,18 +133,18 @@ let arr: allSockets        = TCPServer.allSockets;
 ```
 
 ### Events:
-  * Server:
+* Server:
     * connect
     * error
     * close
-  * Client:
+* Client:
     * close
     * data
     * drain
     * end
     * error
     * lookup
-    
+
 Refer to tcp docs for callback information
 
 # Heartbeat Timeout

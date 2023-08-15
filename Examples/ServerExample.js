@@ -20,7 +20,7 @@ tcpServer.listen(() => {});
 
 //Set to null because it is listening for a server event
 tcpServer.on('connection', (socket) => {
-    socket.write({ test: str }, socket);
+    socket.write({ test: str });
 
     socket.on('data', (data) => {
         console.log(data)
