@@ -1,8 +1,9 @@
 {
   "name": "limitless_tcp",
   "description": "Wrapper library for the net module providing limitless potential.",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "license": "GPL-3.0",
+  "homepage": "https://limitlesstcp.bossslime.com",
   "repository": {
     "type": "git",
     "url": "https://github.com/Limitless-TCP/LimitlessTCP-JavaScript"
